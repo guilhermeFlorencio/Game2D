@@ -33,7 +33,7 @@ pontos = 0
 fonte = pygame.font.SysFont('arial', 30, bold=True, italic=False)
 
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption('Minhoca da Pressão')
+pygame.display.set_caption('The life snake')
 relogio = pygame.time.Clock()
 snake_list = []
 comprimento_inicial = 5
@@ -126,7 +126,9 @@ while True:
 
     if snake_list.count(lista_cabeca) > 1:
         fonte2 = pygame.font.SysFont('arial', 20, True, True)
-        mensagem = 'Game over! Pressione a tecla R para jogar novamente'
+        mensagem = 'Pressione a tecla R para jogar novamente'
+        mensagem2 = 'A Ganância que move... É a mesma que te mata...'
+        texto_formatado = fonte2.render(mensagem2, True, white)
         texto_formatado = fonte2.render(mensagem, True, white)
         ret_texto = texto_formatado.get_rect()
 
