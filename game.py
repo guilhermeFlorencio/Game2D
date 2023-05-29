@@ -1,4 +1,5 @@
 import pygame
+import numpy as np
 from pygame.locals import *
 from sys import exit
 from random import randint
@@ -13,7 +14,8 @@ sound_collision = pygame.mixer.Sound('sound/collision_music.wav')
 
 width = 640
 height = 480
-
+background_image = pygame.image.load(r'image/background_terra.png')
+dialog_box = pygame.image.load(r'image/dialog_box.png')
 x_snake = int(width/2) 
 y_snake = int(height/2)
 
@@ -24,20 +26,33 @@ y_controle = 0
 
 x_apple = randint(40, 600)
 y_apple = randint(50, 430)
-
+white = (255, 255, 255)
+brown = (120,64,8)
+black = (0,0,0)
 pontos = 0
-fonte = pygame.font.SysFont('arial', 40, bold=True, italic=True)
+fonte = pygame.font.SysFont('arial', 30, bold=True, italic=False)
 
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption('Jogo')
+pygame.display.set_caption('Minhogame')
 relogio = pygame.time.Clock()
 snake_list = []
 comprimento_inicial = 5
 morreu = False
 
+
+def imagemNegativa(imagem):
+    img_array = pygame.surfarray.array3d(imagem)
+    img_negativa = -img_array + 255
+    img_negativa = np.clip(img_negativa, 0, 255)  # Garante que os valores estejam no intervalo correto
+    img_negativa = img_negativa.astype(np.uint8)  # Converte de volta para tipo de dados uint8
+    img_negativa_surface = pygame.surfarray.make_surface(img_negativa)
+    return img_negativa_surface
+
+background_image_negativa = imagemNegativa(background_image);
+
 def snake_increase(snake_list):
     for XeY in snake_list:
-        pygame.draw.rect(screen, (0,255,0), (XeY[0], XeY[1], 20, 20))
+        pygame.draw.rect(screen, brown, (XeY[0], XeY[1], 20, 20))
 
 def reiniciar_jogo():
     global pontos, comprimento_inicial, x_snake, y_snake, snake_list, lista_cabeca, x_apple, y_apple, morreu
@@ -53,10 +68,11 @@ def reiniciar_jogo():
 
 while True:
     relogio.tick(30)
-    screen.fill((255,255,255))
-    
+    screen.fill(white) 
+    screen.blit(background_image, (0, 0))
     mensagem = f'Pontos: {pontos}'
-    texto_formatado = fonte.render(mensagem, True, (0,0,0))
+    screen.blit(dialog_box, (220, 10))
+    texto_formatado = fonte.render(mensagem, False, black)
     
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -92,7 +108,7 @@ while True:
     x_snake = x_snake + x_controle
     y_snake = y_snake + y_controle
         
-    cobra = pygame.draw.rect(screen, (0,255,0), (x_snake,y_snake,20,20))
+    cobra = pygame.draw.rect(screen, brown, (x_snake,y_snake,20,20))
     maca = pygame.draw.rect(screen, (255,0,0), (x_apple,y_apple,20,20))
     
     if cobra.colliderect(maca):
@@ -111,12 +127,13 @@ while True:
     if snake_list.count(lista_cabeca) > 1:
         fonte2 = pygame.font.SysFont('arial', 20, True, True)
         mensagem = 'Game over! Pressione a tecla R para jogar novamente'
-        texto_formatado = fonte2.render(mensagem, True, (0,0,0))
+        texto_formatado = fonte2.render(mensagem, True, white)
         ret_texto = texto_formatado.get_rect()
 
         morreu = True
         while morreu:
             screen.fill((255,255,255))
+            screen.blit(background_image_negativa, (0, 0))
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
