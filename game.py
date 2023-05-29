@@ -33,7 +33,7 @@ pontos = 0
 fonte = pygame.font.SysFont('arial', 30, bold=True, italic=False)
 
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption('Minhogame')
+pygame.display.set_caption('Minhoca da Pressão')
 relogio = pygame.time.Clock()
 snake_list = []
 comprimento_inicial = 5
